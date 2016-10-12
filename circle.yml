@@ -1,0 +1,48 @@
+general:
+  branches:
+    only:
+      - develop
+      - /feature.*/
+
+machine:
+  environment:
+    XCODE_SCHEME: test
+    XCODE_WORKSPACE: test
+    XCODE_PROJECT: test
+
+  xcode:
+    version: 7.3
+
+dependencies:
+  pre:
+    - |
+      pushd $HOME
+      python -m virtualenv .awscli
+      pushd .awscli
+      source bin/activate
+      pip install awscli --ignore-installed six
+      deactivate
+      popd
+      popd
+    - echo 'export PATH=$HOME/.homebrew/bin:$HOME/.awscli/bin:$PATH' >>~/.bashrc
+    - echo 'export HOMEBREW_CASK_OPTS="--caskroom=$HOME/.homebrew/Caskroom --appdir=$HOME/Applications"' >>~/.bashrc
+    - . ~/.bashrc
+    - |
+      if [ ! -d ~/.homebrew ]; then
+        mkdir -p ~/.homebrew
+        curl -L https://github.com/Homebrew/homebrew/tarball/master | tar xz --strip 1 -C ~/.homebrew
+        brew update
+        brew cask install xquartz
+        brew install --debug --verbose wine
+        brew install --debug --verbose mono
+      fi
+
+  cache_directories:
+    - ~/.homebrew
+
+test:
+  override:
+    - npm run dist:
+        timeout: 600
+  post:
+    - mv dist $CIRCLE_ARTIFACTS
