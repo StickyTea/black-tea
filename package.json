@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "7zip-bin": "^2.0.1",
-    "electron": "^1.3.4",
+    "electron": "^9.1.0",
     "electron-builder": "^6.0.2",
     "electron-installer-squirrel-windows": "^1.3.0",
     "electron-osx-sign": "^0.4.0-beta4",
